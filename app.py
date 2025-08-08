@@ -3,7 +3,6 @@ import streamlit as st
 import openai
 
 st.set_page_config(page_title="CapIntel AI", layout="centered")
-
 st.title("🤖 CapIntel AI — ИИ-аналитик по рынку")
 
 ticker = st.text_input("Введите тикер (например, QQQ, AMD, NVDA):")
@@ -12,14 +11,14 @@ run_analysis = st.button("Проанализировать")
 
 if run_analysis and ticker:
     with st.spinner("Анализирую..."):
-        openai.api_key = st.secrets["OPENAI_API_KEY"]
+        client = openai.OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
 
         prompt = f'''
 Ты — опытный рыночный аналитик. На основе своей интуиции и опыта определи, что делать с тикером {ticker} в рамках горизонта "{horizon}".
 Не упоминай индикаторы. Объясняй просто: что делать сейчас (BUY / SHORT / CLOSE / WAIT), где вход, стоп и цели. Пиши как человек.
 '''
 
-        response = openai.ChatCompletion.create(
+        response = client.chat.completions.create(
             model="gpt-4o",
             messages=[
                 {"role": "system", "content": "Ты — инвестиционный советник в стиле CapIntel."},
